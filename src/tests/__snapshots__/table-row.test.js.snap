@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Render TableRow component and match snapshot 1`] = `
+<tr>
+  <td>
+    abc
+  </td>
+  <td>
+    Demo
+  </td>
+  <td>
+    <button
+      onClick={[Function]}
+    >
+      Validate
+    </button>
+  </td>
+</tr>
+`;

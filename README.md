@@ -1,70 +1,35 @@
-# Getting Started with Create React App
+# Leads & Prospects from CRM
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## Project details
 
-In the project directory, you can run:
+Steps for project:
 
-### `npm start`
+1. Create markup for solution
+2. Add possible APIs -> json file
+3. Apply logic to simulate lead to prospect behavior
+4. Add styling
+5. Apply test. Setup for jest
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Assumptions for project:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Set a couple of counters for leads and prospects
+- External service will be unknown so I'll just apply a random value to get a conditional result
+- Set external service as a promise to simulate a real scenario where user awaits for a response from an upstream
+- Set a default list of prospects from mock data that will be turned to leads
+- Mock data for leads is displayed in a table with a Validate CTA
+- A lead that do not get a proper qualification remains as a lead
+- The function for internal prospect qualification holds a conditional check from the two external services results. Once the user passes that conditional check, the service will call for the other service/function to get a random qualification value
+- As the project does not request error handling, it will not be applied. There's some else statements with alert to show an error
+- Once a user gets a proper qualification, the function will remove that user from the leads list and update the counters for both leads and prospects
 
-### `npm test`
+Ideas to improve:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Ask for a way to handle those users that do not get a proper qualification. Maybe set in the internal state of the app an additional flag for each user to disable the validate action
+- Apply router logic to separate a view similar to a dashboard that holds the counter for leads and prospects, and a second view for a table of leads. Then when the validation for a user triggers, instead of removing the user from that list, we could just update a value for that user like a flag specifying that it is now a prospect, and then go back to the dashboard view to see the updated counter. This will allow to test for state management and routing logic.
 
-### `npm run build`
+WIP tasks:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Test coverage for components
+- Fix assertions to solve mock implementations
