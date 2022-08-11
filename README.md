@@ -2,6 +2,12 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Available scripts
+
+- `npm run start`: run project
+- `npm run test`: run test
+- `npm run coverage`: run test with coverage
+
 ## Project details
 
 Steps for project:
