@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import App from './App';
 import * as externalServices from './api/external-services';
 import * as internalServices from './api/internal-service';
+import * as qualificationService from './api/qualification';
 
 describe('App', () => {
   jest.spyOn(window, 'alert').mockImplementation(() => {});
@@ -27,14 +28,18 @@ describe('App', () => {
       },
     ];
 
-    const mockedQualification = jest.fn();
+    const mockedQualification = jest.fn(() => 70);
 
     jest
-      .spyOn(externalServices, 'checkUserInNationalIdentificationService')
-      .mockResolvedValue(true);
-    jest.spyOn(externalServices, 'checkUserJudicialRecords').mockResolvedValue(false);
+      .spyOn(externalServices, 'getIsUserInNationalIdentificationService')
+      .mockImplementation(() => Promise.resolve(true));
+    jest
+      .spyOn(externalServices, 'getUserHasJudicialRecords')
+      .mockImplementation(() => Promise.resolve(false));
     jest.spyOn(internalServices, 'getLeads').mockResolvedValue(data);
-    jest.spyOn(internalServices, 'getProspectQualification').mockReturnValue(70);
+    jest
+      .spyOn(qualificationService, 'getLeadQualification')
+      .mockImplementation(mockedQualification);
 
     render(<App />);
 

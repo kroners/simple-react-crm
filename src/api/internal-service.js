@@ -1,32 +1,25 @@
 import data from './data.json';
 import {
-  checkUserInNationalIdentificationService,
-  checkUserJudicialRecords,
+  getIsUserInNationalIdentificationService,
+  getUserHasJudicialRecords,
 } from './external-services';
-
-export const isUserExistInNationalIdentification = (nin) => {
-  checkUserInNationalIdentificationService(nin);
-};
-
-export const hasUserJudicialRecords = (nin) => {
-  checkUserJudicialRecords(nin);
-};
-
-export const getProspectQualification = (id) => {
-  return Math.floor(Math.random() * 100);
-};
+import { getLeadQualification } from './qualification';
 
 export const getLeads = () => data.leads;
 
 export const getShouldUserBeProspect = async (nin) => {
-  const isUserInNationalRegistry = await checkUserInNationalIdentificationService(
+  const isUserInNationalRegistry = await getIsUserInNationalIdentificationService(
     nin
   ).then((res) => res);
-  const hasUserJudicialRecords = await checkUserJudicialRecords(nin).then((res) => res);
+  const hasUserJudicialRecords = await getUserHasJudicialRecords(nin).then((res) => res);
+
+  console.log({ isUserInNationalRegistry, hasUserJudicialRecords });
 
   if (isUserInNationalRegistry && !hasUserJudicialRecords) {
-    return getProspectQualification(nin);
+    const qualification = getLeadQualification(nin);
+    return qualification;
   } else {
+    console.log('alert');
     alert('User does not meet the requirements');
   }
 };

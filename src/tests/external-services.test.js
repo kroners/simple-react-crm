@@ -1,32 +1,36 @@
 import {
-  checkUserInNationalIdentificationService,
-  checkUserJudicialRecords,
+  getIsUserInNationalIdentificationService,
+  getUserHasJudicialRecords,
 } from '../api/external-services';
 
 describe('External services', () => {
-  describe('checkUserInNationalIdentificationService', () => {
-    it('user is registered in National Identification service', () => {
-      const isUserInNationalIdentification = checkUserInNationalIdentificationService(1);
+  describe('getIsUserInNationalIdentificationService', () => {
+    it('user is registered in National Identification service', async () => {
+      const isUserInNationalIdentification =
+        await getIsUserInNationalIdentificationService(1).then((res) => res);
 
       expect(isUserInNationalIdentification).toBeTruthy();
     });
-    it('user is not registered in National Identification service', () => {
-      const isUserInNationalIdentification = checkUserInNationalIdentificationService();
+    it('user is not registered in National Identification service', async () => {
+      const isUserInNationalIdentification =
+        await getIsUserInNationalIdentificationService().then((res) => res);
 
-      expect(isUserInNationalIdentification).toBeFalsy();
+      expect(isUserInNationalIdentification).toEqual({ message: 'Error' });
     });
   });
 
-  describe('checkUserJudicialRecords', () => {
-    it('user has Judicial record', () => {
-      const hasUserJudicialRecords = checkUserJudicialRecords();
+  describe('getUserHasJudicialRecords', () => {
+    it('user has Judicial record', async () => {
+      const hasUserJudicialRecords = await getUserHasJudicialRecords().then((res) => res);
 
       expect(hasUserJudicialRecords).toBeTruthy();
     });
-    it('user does not have Judicial records', () => {
-      const hasUserJudicialRecords = checkUserJudicialRecords(1);
+    it('user does not have Judicial records', async () => {
+      const hasUserJudicialRecords = await getUserHasJudicialRecords(1).then(
+        (res) => res
+      );
 
-      expect(hasUserJudicialRecords).toBeFalsy();
+      expect(hasUserJudicialRecords).toEqual({ message: 'Error' });
     });
   });
 });

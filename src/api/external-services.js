@@ -1,5 +1,5 @@
-export const checkUserInNationalIdentificationService = (nin) => {
-  const isUserRegistered = nin ? true : false;
+export const getIsUserInNationalIdentificationService = (nin) => {
+  const isUserRegistered = nin ? true : null;
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       if (isUserRegistered) {
@@ -11,8 +11,8 @@ export const checkUserInNationalIdentificationService = (nin) => {
   });
 };
 
-export const checkUserJudicialRecords = (nin) => {
-  const hasRecords = nin ? false : true;
+export const getUserHasJudicialRecords = (nin) => {
+  const hasRecords = nin ? null : true;
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       if (!hasRecords) {

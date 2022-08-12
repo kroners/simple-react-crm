@@ -1,92 +1,54 @@
-import {
-  getShouldUserBeProspect,
-  hasUserJudicialRecords,
-  isUserExistInNationalIdentification,
-} from '../api/internal-service';
+import { getShouldUserBeProspect } from '../api/internal-service';
 
-import * as internalServices from '../api/internal-service';
 import * as externalServices from '../api/external-services';
+import * as qualificationService from '../api/qualification';
 
 describe('Internal services', () => {
-  describe('isUserExistInNationalIdentification', () => {
-    it('user is registered in National Identification service', () => {
-      jest
-        .spyOn(externalServices, 'checkUserInNationalIdentificationService')
-        .mockResolvedValue(true);
-
-      const isUserInNationalIdentification = isUserExistInNationalIdentification(1);
-
-      expect(isUserInNationalIdentification).toBeTruthy();
-    });
-    it('user is not registered in National Identification service', () => {
-      jest
-        .spyOn(externalServices, 'checkUserInNationalIdentificationService')
-        .mockResolvedValue(false);
-
-      const isUserInNationalIdentification = isUserExistInNationalIdentification(1);
-
-      expect(isUserInNationalIdentification).toBeFalsy();
-    });
-  });
-
-  describe('hasUserJudicialRecords', () => {
-    it('user has Judicial record', () => {
-      jest.spyOn(externalServices, 'checkUserJudicialRecords').mockResolvedValue(true);
-
-      const hasJudicialRecords = hasUserJudicialRecords();
-
-      expect(hasJudicialRecords).toBeTruthy();
-    });
-    it('user does not have Judicial records', () => {
-      jest.spyOn(externalServices, 'checkUserJudicialRecords').mockResolvedValue(false);
-
-      const hasJudicialRecords = hasUserJudicialRecords(1);
-
-      expect(hasJudicialRecords).toBeFalsy();
-    });
-  });
-
   describe('getShouldUserBeProspect', () => {
-    const mockAlert = jest.fn();
-
-    jest.spyOn(window, 'alert').mockImplementation(mockAlert);
-    beforeAll(() => {
-      jest.clearAllMocks();
+    beforeEach(() => {
+      jest.resetModules();
     });
 
-    it('user does not meet requirements', () => {
+    function mockValidationExternalServices(first, second) {
       jest
-        .spyOn(externalServices, 'checkUserInNationalIdentificationService')
-        .mockResolvedValue(false);
-      jest.spyOn(externalServices, 'checkUserJudicialRecords').mockResolvedValue(true);
+        .spyOn(externalServices, 'getIsUserInNationalIdentificationService')
+        .mockImplementation(() => Promise.resolve(first));
 
-      getShouldUserBeProspect(100);
+      jest
+        .spyOn(externalServices, 'getUserHasJudicialRecords')
+        .mockImplementation(() => Promise.resolve(second));
+    }
 
-      expect(mockAlert).toHaveBeenCalled();
+    it('user does not meet requirements', async () => {
+      const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => {});
+      mockValidationExternalServices(false, true);
+
+      await getShouldUserBeProspect(100);
+
+      expect(alertMock).toHaveBeenCalledTimes(1);
     });
 
-    it('user gets down qualification', () => {
-      jest
-        .spyOn(externalServices, 'checkUserInNationalIdentificationService')
-        .mockResolvedValue(true);
-      jest.spyOn(externalServices, 'checkUserJudicialRecords').mockResolvedValue(false);
+    it('user gets down qualification', async () => {
+      jest.doMock('../api/internal-service', () => ({
+        ...jest.requireActual('../api/internal-service'),
+        getShouldUserBeProspect: jest.fn(() => Promise.resolve(59)),
+      }));
 
-      jest.spyOn(internalServices, 'getProspectQualification').mockResolvedValue(59);
+      const { getShouldUserBeProspect } = require('../api/internal-service');
 
-      const qualification = getShouldUserBeProspect(100);
+      const qualification = await getShouldUserBeProspect(100).then((res) => res);
 
       expect(qualification).toEqual(59);
     });
 
-    it('user gets proper qualification', () => {
+    it('user gets proper qualification', async () => {
+      mockValidationExternalServices(true, false);
+
       jest
-        .spyOn(externalServices, 'checkUserInNationalIdentificationService')
-        .mockResolvedValue(true);
-      jest.spyOn(externalServices, 'checkUserJudicialRecords').mockResolvedValue(false);
+        .spyOn(qualificationService, 'getLeadQualification')
+        .mockImplementation(() => 70);
 
-      jest.spyOn(internalServices, 'getProspectQualification').mockResolvedValue(70);
-
-      const qualification = getShouldUserBeProspect(100);
+      const qualification = await getShouldUserBeProspect(100).then((res) => res);
 
       expect(qualification).toEqual(70);
     });
